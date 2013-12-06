@@ -1,47 +1,127 @@
-<section id="directives-select2">
-	<div class="page-header">
-		<h1>Select2</h1>
-		<small><a href="http://ivaynberg.github.com/select2/">Select2</a> is inspired by <a href="http://harvesthq.github.com/chosen">Chosen</a></small>
-	</div>
-	<div class="row">
-		<div class="span6">
-			<h3>Demo</h3>
-			<div class="well">
-				<p>Value is: {{select2}} <a ng-click="select2='two'">(choose second)</a></p>
-				<select ui-select2 ng-model="select2" data-placeholder="Pick a number">
-					<option value=""></option>
-					<option value="one">First</option>
-					<option value="two">Second</option>
-					<option value="three">Third</option>
-				</select>
-			</div>
+<html ng-app="app">
+<head>
 
-			<div class="well">
-				<p>Value is: {{select2multiple}} <a ng-click="select2multiple=['two']">(choose second)</a></p>
-				<select ui-select2 ng-model="select2multiple" data-placeholder="Pick a number" multiple>
-					<option value="one">First</option>
-					<option value="two">Second</option>
-					<option value="three">Third</option>
-				</select>
-			</div>
-		</div>
-		<div class="span6">
-			<h3>Options</h3>
-			<p>You can pass an object to Select2 as the expression: <code>ui-select2="{allowClear:true}"</code> that will be passed directly to <code>$.fn.select2()</code>. You can read more about the supported list of options and what they do on the <a href="http://ivaynberg.github.com/select2/">Select2 Documentation Page</a>. AngularUI will leverage properties passed to Select2 for any complex behavior, there are no parameters necessary for that are specific to AngularUI.</p>
-		</div>
-	</div>
-	<p class="alert alert-info"><i class="icon-info-sign"></i> <code>ui-select2</code> is incompatible with <code>&lt;select ng-options&gt;</code>. For the best results use <code>&lt;option ng-repeat&gt;</code> instead</p>
-	<p class="alert alert-info"><i class="icon-info-sign"></i> In order to properly support the Select2 placeholder, create an empty <code>&lt;option&gt;</code> tag at the top of the <code>&lt;select&gt;</code> and either set a <code>data-placeholder</code> on the select element or pass a <code>placeholder</code> option to Select2.</p>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" media="screen"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.4.4/select2.css" media="screen"/>
 
-	<h3>How?</h3>
-<pre class="prettyprint linenums" ng-non-bindable>
-&lt;p&gt;Value is: {{select2}} &lt;a ng-click=&quot;select2=&#x27;two&#x27;&quot;&gt;(choose second)&lt;/a&gt;&lt;/p&gt;
-&lt;select ui-select2 ng-model=&quot;select2&quot;&gt;
-&lt;option value=&quot;&quot;&gt;Pick a number&lt;/option&gt;
-&lt;option value=&quot;one&quot;&gt;First&lt;/option&gt;
-&lt;option value=&quot;two&quot;&gt;Second&lt;/option&gt;
-&lt;option value=&quot;three&quot;&gt;Third&lt;/option&gt;
-&lt;/select&gt;
-</pre>
-<p>Or try playing around with this <a href="http://plnkr.co/edit/gist:4279651?p=preview">sandbox demo</a> to see how AJAX works</p>
-</section>
+    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.4/select2.min.js"></script>
+    <script src="../src/select2sortable.js"></script>
+
+    <script>
+        var app = angular.module('app', ['ui.select2.sortable']);
+        app.controller('SelectTester', function ($scope) {
+            $scope.simple = ["one", "two", "three"];
+
+            $scope.objects = [
+                { id: 1, label: "one", other: "ONE"},
+                { id: 2, label: "two", other: "TWO"},
+                { id: 3, label: "three", other: "THREE"}
+            ];
+
+            $scope.complex = [
+                { complex: "1-test", restLink: "https://www.google.fr/?q=pangolin", color: "red" },
+                { complex: "2-another", restLink: "https://www.google.fr/?q=echidna", color: "blue" },
+                { complex: "3-thing", restLink: "https://www.google.fr/?q=firefox", color: "green" }
+            ];
+
+            $scope.getSimpleData = function (term, done) {
+                done($scope.simple);
+            };
+
+            $scope.getObjData = function (term, done) {
+                done($scope.objects);
+            };
+
+            $scope.getComplexData = function (term, done) {
+                done($scope.complex);
+            };
+
+            $scope.complexId = function (item) {
+                return item.complex.split('-')[0];
+            };
+            $scope.complexText = function (item) {
+                return item.complex.split('-')[1] + " (" + item.color + ")";
+            };
+        });
+    </script>
+</head>
+<body ng-controller="SelectTester">
+<div class="container">
+    <div id="simple-test" class="panel panel-default">
+        <div class="panel-heading">
+            One element
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <div class="row">
+                    <input type="hidden" ui-select2-sortable allow-clear='true' data-placeholder="Simple"
+                           ng-model="simpleSelection" simple-query="getSimpleData">
+                    <br>
+                </div>
+                <div class="row">
+                    <span ng-bind-template="   ngModel content : {{simpleSelection}}"></span>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row">
+                    <input type="hidden" ui-select2-sortable allow-clear='true' data-placeholder="Objects"
+                           ng-model="objSelection" simple-query="getObjData">
+                </div>
+                <div class="row">
+                    <span ng-bind-template="   ngModel content : {{objSelection}}"></span>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row">
+                    <input type="hidden" ui-select2-sortable allow-clear='true' data-placeholder="Complex"
+                           ng-model="complexSelection" simple-query="getComplexData"
+                           to-id="complexId" to-text="complexText">
+                </div>
+                <div class="row">
+                    <a ng-href="{{complexSelection.restLink}}" ng-bind="complexSelection.complex" ng-style="{ color : complexSelection.color}"></a>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div id="multiple-test" class="panel panel-default">
+        <div class="panel-heading">
+            Multiple & sortable element
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <div class="row">
+                    <input type="hidden" ui-select2-sortable allow-clear='true' data-placeholder="Simple" multiple sortable
+                           ng-model="simpleSelectionArray" simple-query="getSimpleData">
+                </div>
+                <div class="row">
+                    <span class="row" ng-repeat="s in simpleSelectionArray" ng-bind-template="   ngModel content : {{s}}"></span>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row">
+                    <input type="hidden" ui-select2-sortable allow-clear='true' data-placeholder="Objects" multiple sortable
+                           ng-model="objSelectionArray" simple-query="getObjData">
+                </div>
+                <div class="row">
+                    <span class="row" ng-repeat="o in objSelectionArray" ng-bind-template="   ngModel content : {{o}}"></span>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row">
+                    <input type="hidden" ui-select2-sortable allow-clear='true' data-placeholder="Complex" multiple sortable
+                           ng-model="complexSelectionArray" simple-query="getComplexData"
+                           to-id="complexId" to-text="complexText">
+                </div>
+                <div class="row">
+                    <a class="row" ng-repeat="c in complexSelectionArray" ng-href="{{c.restLink}}" ng-bind="c.complex"
+                       ng-style="{ color : c.color}"></a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

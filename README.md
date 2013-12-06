@@ -18,6 +18,10 @@ I removed support of <select> to keep only <input type="hidden"> to simplify the
 - [JQueryUi](http://jqueryui.com/)
 - [Select2](http://ivaynberg.github.io/select2/)
 
+# Example
+
+You can find a runnable example of lib into docs/index.html
+
 ## Setup
 
 1. Install **Karma**, **Grunt** and **Bower**
@@ -69,52 +73,119 @@ var myAppModule = angular.module('MyApp', ['ui.select2.sortable']);
 Apply the directive to your form elements:
 
 ```html
-TODO
-<select ui-select2 ng-model="select2" data-placeholder="Pick a number">
-    <option value=""></option>
-    <option value="one">First</option>
-    <option value="two">Second</option>
-    <option value="three">Third</option>
-</select>
+<input type="hidden" ui-select2-sortable ng-model="selection"
+    allow-clear='true' simple-query="getObjectsData">
+```
+
+```javascript
+$scope.getObjectsData = function(term, result) {
+    result(["one","two","three"]);
+};
 ```
 
 ## Working with ng-model
 
-The ui-select2 directive plays nicely with ng-model and validation directives such as ng-required.
+The ui-select2 directive plays nicely with ng-model.
 
 If you add the ng-model directive to same the element as ui-select2 then the picked option is automatically synchronized with the model value.
 
-## Working with dynamic options
-`ui-select2` is incompatible with `<select ng-options>`. For the best results use `<option ng-repeat>` instead.
-```html
-TODO
-<select ui-select2 ng-model="select2" data-placeholder="Pick a number">
-    <option value=""></option>
-    <option ng-repeat="number in range" value="{{number.value}}">{{number.text}}</option>
-</select>
-```
-
-## Using simple query mode
-
-When AngularJS View-Model tags are stored as a list of strings,
-setting the ui-select2 specific option `simple_tags` will allow to keep the model as a list of strings,
-and not convert it into a list of Select2 tag objects.
+Into simple-query attribute, you can use a function and return string array or objects array with the callback.
 
 ```html
-<input
-    type="text"
-    ui-select2="select2Options"
-    ng-model="list_of_string"
-    >
+<input type="hidden" ui-select2-sortable ng-model="selection"
+    allow-clear='true' simple-query="getObjectsData">
 ```
 
 ```javascript
-myAppModule.controller('MyController', function($scope) {
-    $scope.list_of_string = ['tag1', 'tag2']
-    $scope.select2Options = {
-        'multiple': true,
-        'simple_tags': true,
-        'tags': ['tag1', 'tag2', 'tag3', 'tag4']  // Can be empty list.
-    };
-});
+$scope.getObjectsData = function(term, result) {
+    result([
+       { id: 1, label: "one", other: "ONE"},
+       { id: 2, label: "two", other: "TWO"},
+       { id: 3, label: "three", other: "THREE"}
+    ]);
+};
+```
+
+## Filter data by term
+
+By default, results are not filter by term enter by user.
+To do it, the simple way is to use angular $filter to customize the filter.
+
+```javascript
+// simple search
+$scope.simpleQuery = function (term, callback) {
+    var values = ['test','abc'];
+    callback($filter('filter')(values, term));
+};
+```
+
+```javascript
+//search on a particular object field
+$scope.simpleQuery = function (term, callback) {
+    var values = [{name:'test'},{name:'abc'}];
+    callback($filter('filter')(values, {name: term}, 'name'));
+};
+```
+
+## Sortable
+
+To enable sortable drag&drop, you have to add both 'multiple' and 'sortable' attributes as below.
+
+```html
+<input type="hidden" ui-select2-sortable ng-model="selection"
+    allow-clear='true' simple-query="getObjectsData"
+    multiple sortable>
+```
+
+```javascript
+$scope.getObjectsData = function(term, result) {
+    result(["one","two","three"]);
+};
+```
+
+## Using any object into query
+
+Objects are automatically manage if you have an id field and a text field.
+Id field can be any of those :
+* _id
+* id
+* uri
+* href
+* resource
+
+Text field can be any of those :
+* text
+* name
+* label
+
+If objects didn't match this rules, you have to set a function to define id field and/or text field as below
+
+```javascript
+// return id
+$scope.complexId = function (item) {
+    return item.complex.split('-')[0];
+};
+
+//return displayed label
+$scope.complexText = function (item) {
+    return item.complex.split('-')[1] + " (" + item.color + ")";
+};
+
+//data
+$scope.complexData = [
+    { complex: "1-test", restLink: "https://www.google.fr/?q=pangolin", color: "red" },
+    { complex: "2-another", restLink: "https://www.google.fr/?q=echidna", color: "blue" },
+    { complex: "3-thing", restLink: "https://www.google.fr/?q=firefox", color: "green" }
+];
+
+//function to simple-query attr
+$scope.getComplexData = function (term, done) {
+    done($scope.complex);
+};
+```
+
+```html
+<input type="hidden" ui-select2-sortable allow-clear='true' multiple sortable
+   ng-model="complexSelectionArray" simple-query="getComplexData"
+   to-id="complexId" to-text="complexText">
 ```
