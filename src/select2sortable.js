@@ -24,11 +24,11 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             //create a function to find an id into object
             if (!scope.toId) {
                 scope.toId = function (item) {
-                    if (item._id) return item._id;
-                    if (item.id) return item.id;
-                    if (item.uri) return item.uri;
-                    if (item.href) return item.href;
-                    if (item.href) return item.resource;
+                    if (item._id) { return item._id; }
+                    if (item.id) { return item.id; }
+                    if (item.uri) { return item.uri; }
+                    if (item.href) { return item.href; }
+                    if (item.href) { return item.resource; }
                     return item;
                 };
             }
@@ -36,9 +36,9 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             //create a function to find display value into object
             if (!scope.toText) {
                 scope.toText = function (item) {
-                    if (item.text) return item.text;
-                    if (item.name) return item.name;
-                    if (item.label) return item.label;
+                    if (item.text) { return item.text; }
+                    if (item.name) { return item.name; }
+                    if (item.label) { return item.label; }
                     return item;
                 };
             }
@@ -158,7 +158,7 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             scope.$watch(function () {
                 return ngModel.$viewValue;
             }, function (current, old) {
-                if (current === old) return;
+                if (current === old) { return; }
                 scope.render();
             }, true);
 
@@ -174,8 +174,8 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             // add an onSelect element which retreive model object into e.added or e.removed
             if (scope.onSelect) {
                 element.on("change", function (e) {
-                    if (e.added) e.added = scope.convertToAngularModel(e.added);
-                    if (e.removed) e.removed = scope.convertToAngularModel(e.removed);
+                    if (e.added) { e.added = scope.convertToAngularModel(e.added); }
+                    if (e.removed) { e.removed = scope.convertToAngularModel(e.removed); }
                     scope.onSelect(e);
                 });
             }
