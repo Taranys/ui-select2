@@ -11,6 +11,10 @@ I change it to meet my needs :
 
 I removed support of <select> to keep only <input type="hidden"> to simplify the directive.
 
+# TODO
+- add filtered example
+- (add a filter-query to filter automatically ?)
+
 # Requirements
 
 - [AngularJS](http://angularjs.org/)

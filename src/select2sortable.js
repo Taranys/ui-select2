@@ -45,8 +45,8 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
 
             //prepare options for the select2 element
             scope.opts = {
-                multiple: attrs.multiple || false,
-                sortable: attrs.multiple || false,
+                multiple: angular.isDefined(attrs.multiple) || false,
+                sortable: angular.isDefined(attrs.sortable) || false,
                 minimumInputLength: scope.minimumInputLength || 0,
                 query: scope.query,
                 allowClear: scope.allowClear || false
@@ -90,6 +90,12 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
                         text: scope.toText(angular_data),
                         _data: angular_data
                     };
+                } else if ( angular.isString(angular_data)) {
+                    return {
+                        id: angular_data,
+                        text: angular_data,
+                        _data: angular_data
+                    };
                 }
 
                 return angular_data;
@@ -114,6 +120,8 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
                         element.select2('data', scope.convertToSelect2Model(ngModel.$viewValue));
                     } else if (!ngModel.$viewValue) {
                         element.select2('data', null);
+                    } else {
+                        element.select2('data', scope.convertToSelect2Model(ngModel.$viewValue));
                     }
                 }
                 if (scope.opts.sortable) {
