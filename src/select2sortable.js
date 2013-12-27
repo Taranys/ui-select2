@@ -14,6 +14,7 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             ngModel: '=',
             allowClear: '=?',
             simpleQuery: '=?',
+            data: '=?',
             query: '=?',
             toId: '=?',
             toText: '=?',
@@ -137,6 +138,14 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
                         query.callback({ results: scope.convertToSelect2Model(values) });
                     });
                 };
+            }else if(scope.data){
+            //Use this if you want to filter on the text field without ajax query
+            //Just use data : [Object object] and the toText function
+                scope.opts.query = function (query) {
+                    query.callback({
+                        results: $filter('filter')(scope.convertToSelect2Model(scope.data), {text: query.term}, 'text')
+                    });
+                }
             }
 
             // call select2 function to set data and all properties
