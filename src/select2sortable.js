@@ -17,6 +17,7 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             query: '=?',
             toId: '=?',
             toText: '=?',
+            sortResults: '=?',
             minimumInputLength: '=?',
             onSelect: '=?'
         },
@@ -43,12 +44,39 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
                 };
             }
 
+            //create a function to find display value into object
+            //this js function is slower than the underscoreJS function below.
+            //I recommand you to override this function by the underscoreJS one
+
+//            $scope.sortResults = function (results, container, query) {
+//                return _.sortBy(results, function(item) {
+//                    return item.text;
+//                });
+//            };
+
+            if (!scope.sortResults) {
+                scope.sortResults = function (results, container, query) {
+                        // use the built in javascript sort function
+                        return results.sort(function(a, b) {
+                            if (a.text > b.text) {
+                                return 1;
+                            } else if (a.text < b.text) {
+                                return -1;
+                            } else {
+                                return 0;
+                            }
+                        });
+                    return results;
+                };
+            }
+            
             //prepare options for the select2 element
             scope.opts = {
                 multiple: angular.isDefined(attrs.multiple) || false,
                 sortable: angular.isDefined(attrs.sortable) || false,
                 minimumInputLength: scope.minimumInputLength || 0,
                 query: scope.query,
+                sortResults: scope.sortResults,
                 allowClear: scope.allowClear || false
             };
 
