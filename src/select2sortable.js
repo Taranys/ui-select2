@@ -14,9 +14,11 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             ngModel: '=',
             allowClear: '=?',
             simpleQuery: '=?',
+            data: '=?',
             query: '=?',
             toId: '=?',
             toText: '=?',
+            sortResults: '=?',
             minimumInputLength: '=?',
             onSelect: '=?'
         },
@@ -43,12 +45,39 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
                 };
             }
 
+            //create a function to find display value into object
+            //this js function is slower than the underscoreJS function below.
+            //I recommand you to override this function by the underscoreJS one
+
+//            $scope.sortResults = function (results, container, query) {
+//                return _.sortBy(results, function(item) {
+//                    return item.text;
+//                });
+//            };
+
+            if (!scope.sortResults) {
+                scope.sortResults = function (results, container, query) {
+                        // use the built in javascript sort function
+                        return results.sort(function(a, b) {
+                            if (a.text > b.text) {
+                                return 1;
+                            } else if (a.text < b.text) {
+                                return -1;
+                            } else {
+                                return 0;
+                            }
+                        });
+                    return results;
+                };
+            }
+            
             //prepare options for the select2 element
             scope.opts = {
                 multiple: angular.isDefined(attrs.multiple) || false,
                 sortable: angular.isDefined(attrs.sortable) || false,
                 minimumInputLength: scope.minimumInputLength || 0,
                 query: scope.query,
+                sortResults: scope.sortResults,
                 allowClear: scope.allowClear || false
             };
 
@@ -109,6 +138,14 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
                         query.callback({ results: scope.convertToSelect2Model(values) });
                     });
                 };
+            }else if(scope.data){
+            //Use this if you want to filter on the text field without ajax query
+            //Just use data : [Object object] and the toText function
+                scope.opts.query = function (query) {
+                    query.callback({
+                        results: $filter('filter')(scope.convertToSelect2Model(scope.data), {text: query.term}, 'text')
+                    });
+                }
             }
 
             // call select2 function to set data and all properties
