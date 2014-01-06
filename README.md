@@ -131,6 +131,22 @@ $scope.simpleQuery = function (term, callback) {
 };
 ```
 
+Since v0.0.2, it is possible to use :
+
+```javascript
+// simple search
+$scope.simpleData = ['test','abc'];
+```
+
+## Sort possible results
+To enable text sorting, you have to add 'sort-results' below.
+
+```html
+<input type="hidden" ui-select2-sortable ng-model="selection"
+    allow-clear='true' simple-query="getObjectsData"
+    sort-results="true">
+```
+
 ## Sortable
 
 To enable sortable drag&drop, you have to add both 'multiple' and 'sortable' attributes as below.
