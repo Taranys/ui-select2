@@ -5,7 +5,7 @@
  *     This change is so that you do not have to do an additional query yourself on top of Select2's own query
  * @params [options] {object} The configuration options passed to $.fn.select2(). Refer to the documentation
  */
-angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$timeout', function ($timeout) {
+angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$timeout', '$filter', function ($timeout, $filter) {
     return {
         require: 'ngModel',
         restrict: 'A',
@@ -26,11 +26,21 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             //create a function to find an id into object
             if (!scope.toId) {
                 scope.toId = function (item) {
-                    if (item._id) { return item._id; }
-                    if (item.id) { return item.id; }
-                    if (item.uri) { return item.uri; }
-                    if (item.href) { return item.href; }
-                    if (item.resource) { return item.resource; }
+                    if (item._id) {
+                        return item._id;
+                    }
+                    if (item.id) {
+                        return item.id;
+                    }
+                    if (item.uri) {
+                        return item.uri;
+                    }
+                    if (item.href) {
+                        return item.href;
+                    }
+                    if (item.resource) {
+                        return item.resource;
+                    }
                     return item;
                 };
             }
@@ -38,9 +48,15 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             //create a function to find display value into object
             if (!scope.toText) {
                 scope.toText = function (item) {
-                    if (item.text) { return item.text; }
-                    if (item.name) { return item.name; }
-                    if (item.label) { return item.label; }
+                    if (item.text) {
+                        return item.text;
+                    }
+                    if (item.name) {
+                        return item.name;
+                    }
+                    if (item.label) {
+                        return item.label;
+                    }
                     return item;
                 };
             }
@@ -58,7 +74,7 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             if (!scope.sortResults) {
                 scope.sortResults = function (results, container, query) {
                     // use the built in javascript sort function
-                    return results.sort(function(a, b) {
+                    return results.sort(function (a, b) {
                         if (a.text > b.text) {
                             return 1;
                         } else if (a.text < b.text) {
@@ -69,7 +85,7 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
                     });
                 };
             }
-            
+
             //prepare options for the select2 element
             scope.opts = {
                 multiple: angular.isDefined(attrs.multiple) || false,
@@ -118,7 +134,7 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
                         text: scope.toText(angular_data),
                         _data: angular_data
                     };
-                } else if ( angular.isString(angular_data)) {
+                } else if (angular.isString(angular_data)) {
                     return {
                         id: angular_data,
                         text: angular_data,
@@ -142,7 +158,7 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
                 //Just use data : [Object object] and the toText function
                 scope.opts.query = function (query) {
                     query.callback({
-                        results: $filter('filter')(scope.convertToSelect2Model(scope.data), {text: query.term}, 'text')
+                        results: $filter('filter')(scope.convertToSelect2Model(scope.simpleData), {text: query.term}, 'text')
                     });
                 };
             }
@@ -200,7 +216,9 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             scope.$watch(function () {
                 return ngModel.$viewValue;
             }, function (current, old) {
-                if (current === old) { return; }
+                if (current === old) {
+                    return;
+                }
                 scope.render();
             }, true);
 
@@ -216,8 +234,12 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             // add an onSelect element which retreive model object into e.added or e.removed
             if (scope.onSelect) {
                 element.on("change", function (e) {
-                    if (e.added) { e.added = scope.convertToAngularModel(e.added); }
-                    if (e.removed) { e.removed = scope.convertToAngularModel(e.removed); }
+                    if (e.added) {
+                        e.added = scope.convertToAngularModel(e.added);
+                    }
+                    if (e.removed) {
+                        e.removed = scope.convertToAngularModel(e.removed);
+                    }
                     scope.onSelect(e);
                 });
             }
