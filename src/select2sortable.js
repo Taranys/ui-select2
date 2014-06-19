@@ -19,6 +19,7 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             toId: '=?',
             toText: '=?',
             sortResults: '=?',
+            doNotSort: '=?',
             minimumInputLength: '=?',
             onSelect: '=?'
         },
@@ -71,7 +72,7 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
 //                });
 //            };
 
-            if (!scope.sortResults) {
+            if (!scope.sortResults && !scope.doNotSort) {
                 scope.sortResults = function (results, container, query) {
                     // use the built in javascript sort function
                     return results.sort(function (a, b) {
@@ -95,6 +96,21 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
                 sortResults: scope.sortResults,
                 allowClear: scope.allowClear || false
             };
+
+            /**
+             * VALIDATION
+             */
+            var validator = function (value) {
+                if (attrs.required && value) {
+                    ngModel.$setValidity('required', value && value.length != 0);
+                } else {
+                    ngModel.$setValidity('required', true);
+                }
+                return value;
+            };
+
+            ngModel.$formatters.push(validator);
+            ngModel.$parsers.unshift(validator);
 
             // Convert from Select2 view-model to Angular view-model.
             scope.convertToAngularModel = function (select2_data) {
@@ -248,6 +264,7 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             $timeout(function () {
                 element.select2(scope.opts);
                 scope.render();
+                validator();
             });
         }
     };
