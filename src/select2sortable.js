@@ -101,8 +101,12 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
              * VALIDATION
              */
             var validator = function (value) {
-                if (attrs.required && value) {
-                    ngModel.$setValidity('required', value && value.length != 0);
+                if (attrs.required) {
+                    if (angular.isArray(value)) {
+                        ngModel.$setValidity('required', value && value.length != 0);
+                    } else {
+                        ngModel.$setValidity('required', value);
+                    }
                 } else {
                     ngModel.$setValidity('required', true);
                 }
@@ -264,7 +268,7 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             $timeout(function () {
                 element.select2(scope.opts);
                 scope.render();
-                validator();
+                validator(ngModel.$viewValue);
             });
         }
     };
