@@ -21,7 +21,8 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             sortResults: '=?',
             doNotSort: '=?',
             minimumInputLength: '=?',
-            onSelect: '=?'
+            onSelect: '=?',
+            watchByValue: '=?'
         },
         link: function (scope, element, attrs, ngModel) {
             //create a function to find an id into object
@@ -94,7 +95,8 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
                 minimumInputLength: scope.minimumInputLength || 0,
                 query: scope.query,
                 sortResults: scope.sortResults,
-                allowClear: scope.allowClear || false
+                allowClear: scope.allowClear || false,
+                watchByValue: angular.isDefined(scope.watchByValue) ? scope.watchByValue : true
             };
 
             /**
@@ -240,7 +242,7 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
                     return;
                 }
                 scope.render();
-            }, true);
+            }, scope.opts.watchByValue);
 
             element.bind("$destroy", function () {
                 element.select2("destroy");
