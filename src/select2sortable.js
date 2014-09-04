@@ -103,7 +103,7 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             var validator = function (value) {
                 if (attrs.required) {
                     if (angular.isArray(value)) {
-                        ngModel.$setValidity('required', value && value.length != 0);
+                        ngModel.$setValidity('required', value && value.length !== 0);
                     } else {
                         ngModel.$setValidity('required', value);
                     }
