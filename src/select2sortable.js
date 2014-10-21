@@ -18,6 +18,8 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             query: '=?',
             toId: '=?',
             toText: '=?',
+            formatSelection: '=?',
+            formatResult: '=?',
             sortResults: '=?',
             doNotSort: '=?',
             minimumInputLength: '=?',
@@ -95,6 +97,8 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
                 minimumInputLength: scope.minimumInputLength || 0,
                 query: scope.query,
                 sortResults: scope.sortResults,
+                formatSelection: scope.formatSelection,
+                formatResult: scope.formatResult,
                 allowClear: scope.allowClear || false,
                 watchByValue: angular.isDefined(scope.watchByValue) ? scope.watchByValue : true
             };

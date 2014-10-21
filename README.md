@@ -209,3 +209,10 @@ $scope.getComplexData = function (term, done) {
    ng-model="complexSelectionArray" simple-query="getComplexData"
    to-id="complexId" to-text="complexText">
 ```
+
+## Change log
+
+### 1.2.0
+
+Add support of formatResult and formatSelection
+Update license from MIT to BeerWare :)
