@@ -212,6 +212,10 @@ $scope.getComplexData = function (term, done) {
 
 ## Change log
 
+### 1.3.0
+
+Add locked element support
+
 ### 1.2.0
 
 Add support of formatResult and formatSelection
