@@ -195,14 +195,14 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
       // call select2 function to set data and all properties
       scope.render = function () {
         if (scope.opts.multiple) {
-          element.select2('data', scope.convertToSelect2Model(ngModel.$viewValue));
+          element.select2('data', scope.convertToSelect2Model(ngModel.$modelValue));
         } else {
-          if (angular.isObject(ngModel.$viewValue)) {
-            element.select2('data', scope.convertToSelect2Model(ngModel.$viewValue));
-          } else if (!ngModel.$viewValue) {
+          if (angular.isObject(ngModel.$modelValue)) {
+            element.select2('data', scope.convertToSelect2Model(ngModel.$modelValue));
+          } else if (!ngModel.$modelValue) {
             element.select2('data', null);
           } else {
-            element.select2('data', scope.convertToSelect2Model(ngModel.$viewValue));
+            element.select2('data', scope.convertToSelect2Model(ngModel.$modelValue));
           }
         }
         if (scope.opts.sortable) {
@@ -243,7 +243,7 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
 
       // Watch the model for programmatic changes
       scope.$watch(function () {
-        return ngModel.$viewValue;
+        return ngModel.$modelValue;
       }, function (current, old) {
         if (current === old) {
           return;
@@ -277,7 +277,7 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
       $timeout(function () {
         element.select2(scope.opts);
         scope.render();
-        validator(ngModel.$viewValue);
+        validator(ngModel.$modelValue);
       });
     }
   };
