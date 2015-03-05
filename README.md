@@ -74,7 +74,18 @@ Add the select2 module as a dependency to your application module:
 var myAppModule = angular.module('MyApp', ['ui.select2.sortable']);
 ```
 
-Apply the directive to your form elements:
+Apply the directive to your form elements (sync) :
+
+```html
+<input type="hidden" ui-select2-sortable ng-model="selection"
+    allow-clear='true' simple-data="data">
+```
+
+```javascript
+$scope.data = ["one","two","three"];
+```
+
+Apply the directive to your form elements (async) :
 
 ```html
 <input type="hidden" ui-select2-sortable ng-model="selection"
@@ -92,6 +103,23 @@ $scope.getObjectsData = function(term, result) {
 The ui-select2 directive plays nicely with ng-model.
 
 If you add the ng-model directive to same the element as ui-select2 then the picked option is automatically synchronized with the model value.
+
+Into simple-data attribute, you can use an array directly and obtain a string or an object into ngModel.
+
+```html
+<input type="hidden" ui-select2-sortable ng-model="selection"
+    allow-clear='false' simple-data="getObjectsData">
+```
+
+```javascript
+$scope.data = [
+       { id: 1, label: "one", other: "ONE"},
+       { id: 2, label: "two", other: "TWO"},
+       { id: 3, label: "three", other: "THREE"}
+    ];
+    
+// $scope.selection === { id: 1, label: "one", other: "ONE"}
+```
 
 Into simple-query attribute, you can use a function and return string array or objects array with the callback.
 
