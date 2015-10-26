@@ -112,13 +112,15 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
           if (angular.isArray(value)) {
             ngModel.$setValidity('required', value && value.length !== 0);
           } else {
-            ngModel.$setValidity('required', value);
+            ngModel.$setValidity('required', !!value);
           }
         } else {
           ngModel.$setValidity('required', true);
         }
         return value;
       };
+      // support ng-required
+      scope.$watch(function() { return attrs.required; }, function() { validator(ngModel.$modelValue); });
 
       ngModel.$formatters.push(validator);
       ngModel.$parsers.unshift(validator);
@@ -217,6 +219,7 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
             }
           });
         }
+        validator(ngModel.$modelValue);
       };
 
       // Set the view and model value and update the angular template manually for the ajax/multiple select2.

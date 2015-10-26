@@ -7,7 +7,7 @@
         "select2",
         "sortable"
     ],
-    "version": "0.0.1",
+    "version": "1.3.1",
     "repository": {
         "type": "git",
         "url": "git://github.com/Taranys/ui-select2-sortable.git"
