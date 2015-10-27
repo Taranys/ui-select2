@@ -244,6 +244,11 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
         });
       });
 
+      // force validation on data changes
+      scope.$watch('ngModel', function() {
+        validator(ngModel.$modelValue);
+      });
+
       // Watch the model for programmatic changes
       scope.$watch(function () {
         return ngModel.$modelValue;
