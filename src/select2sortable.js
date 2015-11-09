@@ -5,7 +5,7 @@
  *     This change is so that you do not have to do an additional query yourself on top of Select2's own query
  * @params [options] {object} The configuration options passed to $.fn.select2(). Refer to the documentation
  */
-angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$timeout', '$filter', function ($timeout, $filter) {
+angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$timeout', '$filter', '$injector', function ($timeout, $filter, $injector) {
   return {
     require: 'ngModel',
     restrict: 'A',
@@ -281,12 +281,15 @@ angular.module('ui.select2.sortable', []).directive('uiSelect2Sortable', ['$time
         });
       }
 
+      // dirty hack to fix bug with ng-translate placeholder...
+      var waitingBeforeStart = $injector.has('$translate') ? 250 : 0;
+
       // Initialize the plugin late so that the injected DOM does not disrupt the template compiler
       $timeout(function () {
         element.select2(scope.opts);
         scope.render();
         validator(ngModel.$modelValue);
-      });
+      }, waitingBeforeStart);
     }
   };
 }]);
